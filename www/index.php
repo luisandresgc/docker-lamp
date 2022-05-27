@@ -74,16 +74,37 @@
         $db = null;
     }
 
-    // $temp = $pdo_dos->query("SELECT sucursal FROM usuarios limit 1")->fetch(PDO::FETCH_COLUMN);
-    // echo "<h1>$temp</h1> "; 
+
+    // para listar todas las tablas tengo 2 opciones
+    // show tables (prefiero esta porque solo me trae las tablas de la bd actaul)
+    // select table_name from information_schema.tables;
 
     // apartir de aqui crea un funcion para insertar datos, pasandole de parametros el nombre de la tabla y el limit
-    $usuarios = $pdo_dos ->query("SELECT * FROM usuarios")->fetchAll(PDO::FETCH_ASSOC);
+    $usuarios = $pdo_dos ->query("SELECT codNoEmpleado, usuario, contrasena, tipoUsuario, correo, status, sucursal, FROM usuarios 
+    where codNoEmpleado not in (1,2)")->fetchAll(PDO::FETCH_ASSOC);
 
+
+    $describe = $pdo_dos ->query("describe usuarios")->fetchAll(PDO::FETCH_ASSOC);
+    $crear_table = "CREATE TABLE usuarios (";
+    $index_i = 0;
+    $describe_lenght = count($describe);
+    foreach($describe as $i => $fila){
+        if($index_i < $describe_lenght-1){
+            $crear_table.= $fila["Field"]. " " . $fila["Type"]. ", ";
+        }else{
+            $crear_table.= $fila["Field"]. " " . $fila["Type"];
+        }
+        $index_i+=1;
+    }
+    $crear_table.=")";
+    // echo $crear_table;
+    $pdo->exec($crear_table);
+
+    $inserta_sql = "INSERT INTO usuarios (codNoEmpleado, usuario, contrasena, tipoUsuario, correo, status, sucursal)
+        VALUES";
     $inserta_usuario = "";
     $temp_dos = count($usuarios);
     $temp = count($usuarios[0]);
-
     $index_i = 0;
     foreach($usuarios as $i =>$usuario){
         $inserta_usuario.= "(";
@@ -104,8 +125,12 @@
         }
         $index_i+= 1;
     }
-    echo $inserta_usuario;
+    $inserta_sql.= $inserta_usuario;
+    echo $inserta_sql; // falta esto insertart a la table
+    $pdo->exec($inserta_sql);
     ?>
+
+    
     </div>
 </body>
 </html>
