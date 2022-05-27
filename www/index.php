@@ -57,7 +57,7 @@
     }
     $temp = $pdo->query("SELECT * FROM Person")->fetch(PDO::FETCH_COLUMN);
 
-    echo "<h1>$temp</h1> "; 
+    // echo "<h1>$temp</h1> "; 
 
 
     try {
@@ -74,10 +74,37 @@
         $db = null;
     }
 
-    $temp = $pdo_dos->query("SELECT sucursal FROM usuarios limit 1")->fetch(PDO::FETCH_COLUMN);
+    // $temp = $pdo_dos->query("SELECT sucursal FROM usuarios limit 1")->fetch(PDO::FETCH_COLUMN);
+    // echo "<h1>$temp</h1> "; 
 
-    echo "<h1>$temp</h1> "; 
+    // apartir de aqui crea un funcion para insertar datos, pasandole de parametros el nombre de la tabla y el limit
+    $usuarios = $pdo_dos ->query("SELECT * FROM usuarios")->fetchAll(PDO::FETCH_ASSOC);
 
+    $inserta_usuario = "";
+    $temp_dos = count($usuarios);
+    $temp = count($usuarios[0]);
+
+    $index_i = 0;
+    foreach($usuarios as $i =>$usuario){
+        $inserta_usuario.= "(";
+        $index_j = 0;
+        foreach($usuario as $j => $col){  
+            if($index_j < $temp -1){
+                $inserta_usuario.="'".$col."'";
+                $inserta_usuario.=",";
+            }else{
+                $inserta_usuario.="'".$col."'";
+            }
+            $index_j+= 1;
+        }
+        if($index_i < $temp_dos -1){
+            $inserta_usuario.="), ";
+        }else{
+            $inserta_usuario.=");";
+        }
+        $index_i+= 1;
+    }
+    echo $inserta_usuario;
     ?>
     </div>
 </body>
