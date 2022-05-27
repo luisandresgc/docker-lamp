@@ -11,36 +11,9 @@
 </head>
 <body>
     <div class="container">
-    <?php echo "<h1>Hi! I'm happy</h1>"; ?>
 
     <?php
     require_once 'security.php';
-
-
-    // Connexion et sélection de la base
-    // $conn = mysqli_connect('db', 'user', 'test', "myDb");
-
-
-    // $query = 'SELECT * From Person';
-    // $result = mysqli_query($conn, $query);
-
-    // echo '<table class="table table-striped">';
-    // echo '<thead><tr><th></th><th>id</th><th>name</th></tr></thead>';
-    // while($value = $result->fetch_array(MYSQLI_ASSOC)){
-    //     echo '<tr>';
-    //     echo '<td><a href="#"><span class="glyphicon glyphicon-search"></span></a></td>';
-    //     foreach($value as $element){
-    //         echo '<td>' . $element . '</td>';
-    //     }
-
-    //     echo '</tr>';
-    // }
-    // echo '</table>';
-
-    // /* Libération du jeu de résultats */
-    // $result->close();
-
-    // mysqli_close($conn);
 
     try {
         $pdo = new PDO("mysql:dbname=myDb;host=db;",
@@ -55,9 +28,6 @@
        file_put_contents('PDOErrors.txt', $error_message, FILE_APPEND);
         $db = null;
     }
-    // $temp = $pdo->query("SELECT * FROM Person")->fetch(PDO::FETCH_COLUMN);
-
-    // echo "<h1>$temp</h1> "; 
 
 
     try {
@@ -80,29 +50,32 @@
     // select table_name from information_schema.tables;
 
     // apartir de aqui crea un funcion para insertar datos, pasandole de parametros el nombre de la tabla y el limit
-    $usuarios = $pdo_dos ->query("SELECT codNoEmpleado, usuario, contrasena, tipoUsuario, correo, status, sucursal 
+    $usuarios = $pdo_dos ->query("SELECT * 
     FROM usuarios 
     where codNoEmpleado not in (1,2)")->fetchAll(PDO::FETCH_ASSOC);
 
 
     $describe = $pdo_dos ->query("describe usuarios")->fetchAll(PDO::FETCH_ASSOC);
     $crear_table = "CREATE TABLE usuarios (";
+    $inserta_sql = "INSERT INTO usuarios (";
     $index_i = 0;
     $describe_lenght = count($describe);
     foreach($describe as $i => $fila){
         if($index_i < $describe_lenght-1){
-            $crear_table.= $fila["Field"]. " " . $fila["Type"]. ", ";
+            $crear_table.= $fila["Field"]. " " . $fila["Type"]. " DEFAULT NULL, ";
+            $inserta_sql.=$fila["Field"].",";
         }else{
-            $crear_table.= $fila["Field"]. " " . $fila["Type"];
+            $crear_table.= $fila["Field"]. " " . $fila["Type"]. " DEFAULT NULL ";
+            $inserta_sql.=$fila["Field"];
         }
         $index_i+=1;
     }
+    $inserta_sql .= ") VALUES ";
     $crear_table.=")";
     // echo $crear_table;
     $pdo->exec($crear_table);
 
-    $inserta_sql = "INSERT INTO usuarios (codNoEmpleado, usuario, contrasena, tipoUsuario, correo, status, sucursal)
-        VALUES";
+    
     $inserta_usuario = "";
     $temp_dos = count($usuarios);
     $temp = count($usuarios[0]);
@@ -111,9 +84,11 @@
         $inserta_usuario.= "(";
         $index_j = 0;
         foreach($usuario as $j => $col){  
+            if($col==""){
+                $col = 0;
+            }
             if($index_j < $temp -1){
-                $inserta_usuario.="'".$col."'";
-                $inserta_usuario.=",";
+                $inserta_usuario.="'".$col."',";
             }else{
                 $inserta_usuario.="'".$col."'";
             }
@@ -127,7 +102,7 @@
         $index_i+= 1;
     }
     $inserta_sql.= $inserta_usuario;
-    echo $inserta_sql; // falta esto insertart a la table
+    // echo $inserta_sql; 
     $pdo->exec($inserta_sql);
     ?>
 
