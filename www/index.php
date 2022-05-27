@@ -18,29 +18,29 @@
 
 
     // Connexion et sélection de la base
-    $conn = mysqli_connect('db', 'user', 'test', "myDb");
+    // $conn = mysqli_connect('db', 'user', 'test', "myDb");
 
 
-    $query = 'SELECT * From Person';
-    $result = mysqli_query($conn, $query);
+    // $query = 'SELECT * From Person';
+    // $result = mysqli_query($conn, $query);
 
-    echo '<table class="table table-striped">';
-    echo '<thead><tr><th></th><th>id</th><th>name</th></tr></thead>';
-    while($value = $result->fetch_array(MYSQLI_ASSOC)){
-        echo '<tr>';
-        echo '<td><a href="#"><span class="glyphicon glyphicon-search"></span></a></td>';
-        foreach($value as $element){
-            echo '<td>' . $element . '</td>';
-        }
+    // echo '<table class="table table-striped">';
+    // echo '<thead><tr><th></th><th>id</th><th>name</th></tr></thead>';
+    // while($value = $result->fetch_array(MYSQLI_ASSOC)){
+    //     echo '<tr>';
+    //     echo '<td><a href="#"><span class="glyphicon glyphicon-search"></span></a></td>';
+    //     foreach($value as $element){
+    //         echo '<td>' . $element . '</td>';
+    //     }
 
-        echo '</tr>';
-    }
-    echo '</table>';
+    //     echo '</tr>';
+    // }
+    // echo '</table>';
 
-    /* Libération du jeu de résultats */
-    $result->close();
+    // /* Libération du jeu de résultats */
+    // $result->close();
 
-    mysqli_close($conn);
+    // mysqli_close($conn);
 
     try {
         $pdo = new PDO("mysql:dbname=myDb;host=db;",
@@ -55,7 +55,7 @@
        file_put_contents('PDOErrors.txt', $error_message, FILE_APPEND);
         $db = null;
     }
-    $temp = $pdo->query("SELECT * FROM Person")->fetch(PDO::FETCH_COLUMN);
+    // $temp = $pdo->query("SELECT * FROM Person")->fetch(PDO::FETCH_COLUMN);
 
     // echo "<h1>$temp</h1> "; 
 
@@ -80,7 +80,8 @@
     // select table_name from information_schema.tables;
 
     // apartir de aqui crea un funcion para insertar datos, pasandole de parametros el nombre de la tabla y el limit
-    $usuarios = $pdo_dos ->query("SELECT codNoEmpleado, usuario, contrasena, tipoUsuario, correo, status, sucursal, FROM usuarios 
+    $usuarios = $pdo_dos ->query("SELECT codNoEmpleado, usuario, contrasena, tipoUsuario, correo, status, sucursal 
+    FROM usuarios 
     where codNoEmpleado not in (1,2)")->fetchAll(PDO::FETCH_ASSOC);
 
 
