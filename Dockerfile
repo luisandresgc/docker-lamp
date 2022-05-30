@@ -7,3 +7,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install zip
 RUN docker-php-ext-install mysqli
+
+# WORDDIR /pedidosalmacen
+# COPY ./app /app/
